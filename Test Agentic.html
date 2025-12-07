@@ -1,0 +1,814 @@
+<!-- Save this as test_page.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dynamics 365 Case Resolution Agent Tester</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        body {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        .container {
+            background: white;
+            border-radius: 15px;
+            padding: 30px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            margin-top: 30px;
+            margin-bottom: 30px;
+        }
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        .header h1 {
+            color: #2c3e50;
+            font-weight: bold;
+        }
+        .header p {
+            color: #7f8c8d;
+        }
+        .card {
+            border: none;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            margin-bottom: 20px;
+        }
+        .card-header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border-radius: 10px 10px 0 0 !important;
+            padding: 15px;
+        }
+        .btn-primary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border: none;
+            padding: 10px 30px;
+            font-weight: bold;
+        }
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 7px 14px rgba(50, 50, 93, 0.1), 0 3px 6px rgba(0, 0, 0, 0.08);
+        }
+        .status-badge {
+            padding: 5px 10px;
+            border-radius: 20px;
+            font-weight: bold;
+        }
+        .status-success {
+            background-color: #d4edda;
+            color: #155724;
+        }
+        .status-error {
+            background-color: #f8d7da;
+            color: #721c24;
+        }
+        .status-pending {
+            background-color: #fff3cd;
+            color: #856404;
+        }
+        .case-info {
+            background-color: #f8f9fa;
+            border-left: 4px solid #667eea;
+            padding: 15px;
+            border-radius: 5px;
+            margin-bottom: 20px;
+        }
+        .response-section {
+            max-height: 500px;
+            overflow-y: auto;
+        }
+        .message-bubble {
+            background-color: #f1f3f5;
+            border-radius: 10px;
+            padding: 10px;
+            margin: 5px 0;
+            border-left: 3px solid #667eea;
+        }
+        .ai-message {
+            background-color: #e3f2fd;
+            border-left-color: #1976d2;
+        }
+        .human-message {
+            background-color: #f5f5f5;
+            border-left-color: #757575;
+        }
+        .tool-message {
+            background-color: #fff8e1;
+            border-left-color: #ffb300;
+        }
+        .preloader {
+            display: none;
+            text-align: center;
+            padding: 20px;
+        }
+        .step-indicator {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 30px;
+            position: relative;
+        }
+        .step-indicator:before {
+            content: '';
+            position: absolute;
+            top: 20px;
+            left: 0;
+            right: 0;
+            height: 2px;
+            background-color: #e0e0e0;
+            z-index: 1;
+        }
+        .step {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            position: relative;
+            z-index: 2;
+        }
+        .step-circle {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background-color: #e0e0e0;
+            color: #666;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            margin-bottom: 10px;
+            transition: all 0.3s ease;
+        }
+        .step.active .step-circle {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            transform: scale(1.1);
+        }
+        .step.completed .step-circle {
+            background-color: #28a745;
+            color: white;
+        }
+        .step-label {
+            font-size: 12px;
+            color: #666;
+            text-align: center;
+        }
+        .step.active .step-label {
+            font-weight: bold;
+            color: #333;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1><i class="fas fa-robot"></i> Dynamics 365 Case Resolution Agent</h1>
+            <p>Test the AI-powered case resolution workflow for Dynamics 365 Customer Service</p>
+        </div>
+
+        <!-- Step Indicator -->
+        <div class="step-indicator">
+            <div class="step active" id="step1">
+                <div class="step-circle">1</div>
+                <div class="step-label">Configuration</div>
+            </div>
+            <div class="step" id="step2">
+                <div class="step-circle">2</div>
+                <div class="step-label">Execution</div>
+            </div>
+            <div class="step" id="step3">
+                <div class="step-circle">3</div>
+                <div class="step-label">Results</div>
+            </div>
+        </div>
+
+        <!-- Configuration Card -->
+        <div class="card">
+            <div class="card-header">
+                <h5 class="mb-0"><i class="fas fa-cog"></i> Configuration</h5>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="mb-3">
+                            <label for="apiUrl" class="form-label">API Base URL</label>
+                            <input type="text" class="form-control" id="apiUrl" value="http://localhost:8001">
+                            <div class="form-text">
+                                Base URL for the API (e.g., http://localhost:8001)
+                                <span id="connectionStatus" class="badge bg-secondary ms-2">Not tested</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="mb-3">
+                            <label for="caseId" class="form-label">Case ID (GUID)</label>
+                            <input type="text" class="form-control" id="caseId" value="02888c89-4fc8-f011-8543-002248da5d02">
+                            <div class="form-text">Dynamics 365 incident GUID</div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="mb-3">
+                            <label for="task" class="form-label">Task Description</label>
+                            <textarea class="form-control" id="task" rows="3">Suggest resolution for Account update Address</textarea>
+                            <div class="form-text">Instructions for the AI agent</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Sample Cases -->
+                <div class="mb-3">
+                    <label class="form-label">Sample Cases</label>
+                    <div class="d-flex flex-wrap gap-2">
+                        <button class="btn btn-sm btn-outline-primary" onclick="loadSample('billing')">
+                            <i class="fas fa-file-invoice-dollar"></i> Billing Issue
+                        </button>
+                        <button class="btn btn-sm btn-outline-primary" onclick="loadSample('technical')">
+                            <i class="fas fa-tools"></i> Technical Support
+                        </button>
+                        <button class="btn btn-sm btn-outline-primary" onclick="loadSample('account')">
+                            <i class="fas fa-user-edit"></i> Account Update
+                        </button>
+                        <button class="btn btn-sm btn-outline-primary" onclick="loadSample('escalation')">
+                            <i class="fas fa-exclamation-triangle"></i> Escalation Needed
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Execution Card -->
+        <div class="card">
+            <div class="card-header">
+                <h5 class="mb-0"><i class="fas fa-play-circle"></i> Execution</h5>
+            </div>
+            <div class="card-body">
+                <div class="d-flex justify-content-center gap-3 flex-wrap">
+                    <button id="testApiBtn" class="btn btn-outline-success" onclick="testApi()">
+                        <i class="fas fa-plug"></i> Test API
+                    </button>
+                    <button id="healthCheckBtn" class="btn btn-outline-info" onclick="healthCheck()">
+                        <i class="fas fa-heartbeat"></i> Health Check
+                    </button>
+                    <button id="testFetchBtn" class="btn btn-outline-primary" onclick="testFetch()">
+                        <i class="fas fa-database"></i> Test Case Fetch
+                    </button>
+                    <button id="resolveCaseBtn" class="btn btn-primary" onclick="resolveCase()">
+                        <i class="fas fa-play"></i> Run Full Resolution
+                    </button>
+                </div>
+                
+                <!-- Preloader -->
+                <div id="preloader" class="preloader">
+                    <div class="spinner-border text-primary" role="status">
+                        <span class="visually-hidden">Loading...</span>
+                    </div>
+                    <div id="statusText" class="mt-2">Processing...</div>
+                </div>
+
+                <!-- Progress Bar -->
+                <div id="progressContainer" class="mt-3" style="display: none;">
+                    <div class="progress" style="height: 10px;">
+                        <div id="progressBar" class="progress-bar progress-bar-striped progress-bar-animated" 
+                             role="progressbar" style="width: 0%"></div>
+                    </div>
+                    <div id="progressText" class="text-center mt-2 small"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Results Card -->
+        <div class="card">
+            <div class="card-header d-flex justify-content-between align-items-center">
+                <h5 class="mb-0"><i class="fas fa-chart-bar"></i> Results</h5>
+                <div>
+                    <span id="responseStatus" class="status-badge status-pending">Ready</span>
+                </div>
+            </div>
+            <div class="card-body">
+                <!-- Response Summary -->
+                <div id="responseSummary" class="case-info" style="display: none;">
+                    <h6><i class="fas fa-info-circle"></i> Case Summary</h6>
+                    <div class="row">
+                        <div class="col-md-3">
+                            <strong>Case ID:</strong> <span id="resultCaseId">-</span>
+                        </div>
+                        <div class="col-md-3">
+                            <strong>Status:</strong> <span id="resultStatus">-</span>
+                        </div>
+                        <div class="col-md-3">
+                            <strong>Confidence:</strong> <span id="resultConfidence">-</span>%
+                        </div>
+                        <div class="col-md-3">
+                            <strong>Escalated:</strong> <span id="resultEscalated">-</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Tabs for different views -->
+                <ul class="nav nav-tabs mb-3" id="resultsTab" role="tablist">
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link active" id="json-tab" data-bs-toggle="tab" data-bs-target="#json" type="button" role="tab">Raw JSON</button>
+                    </li>
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link" id="messages-tab" data-bs-toggle="tab" data-bs-target="#messages" type="button" role="tab">Messages</button>
+                    </li>
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link" id="resolution-tab" data-bs-toggle="tab" data-bs-target="#resolution" type="button" role="tab">Resolution</button>
+                    </li>
+                </ul>
+
+                <div class="tab-content" id="resultsTabContent">
+                    <!-- Raw JSON Tab -->
+                    <div class="tab-pane fade show active response-section" id="json" role="tabpanel">
+                        <pre id="responseJson" class="p-3 bg-light rounded" style="min-height: 200px;">{
+  "status": "No response yet"
+}</pre>
+                    </div>
+
+                    <!-- Messages Tab -->
+                    <div class="tab-pane fade response-section" id="messages" role="tabpanel">
+                        <div id="messagesList" class="p-3">
+                            <p class="text-muted">No messages yet</p>
+                        </div>
+                    </div>
+
+                    <!-- Resolution Tab -->
+                    <div class="tab-pane fade" id="resolution" role="tabpanel">
+                        <div id="resolutionContent" class="p-3">
+                            <p class="text-muted">No resolution data yet</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Debug Information -->
+        <div class="card">
+            <div class="card-header" data-bs-toggle="collapse" href="#debugInfo" style="cursor: pointer;">
+                <h5 class="mb-0"><i class="fas fa-bug"></i> Debug Information</h5>
+            </div>
+            <div id="debugInfo" class="collapse show">
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <h6>Request Details</h6>
+                            <pre id="requestDetails" class="p-3 bg-light rounded small">No request made yet</pre>
+                        </div>
+                        <div class="col-md-6">
+                            <h6>Console Log</h6>
+                            <div id="consoleLog" class="p-3 bg-light rounded small" style="max-height: 200px; overflow-y: auto;">
+                                <!-- Console messages will appear here -->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Footer -->
+        <div class="text-center mt-4 text-muted">
+            <p>Dynamics 365 Case Resolution Agent | Test Interface v1.0</p>
+            <p class="small">Use this interface to test the AI agent workflow for Dynamics 365 cases</p>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // Console logging helper
+        function logToConsole(message, type = 'info') {
+            const consoleDiv = document.getElementById('consoleLog');
+            const timestamp = new Date().toLocaleTimeString();
+            const badge = type === 'error' ? 'danger' : type === 'warning' ? 'warning' : type === 'success' ? 'success' : 'info';
+            consoleDiv.innerHTML += `
+                <div class="mb-1">
+                    <span class="badge bg-${badge}">${timestamp}</span>
+                    ${message}
+                </div>
+            `;
+            consoleDiv.scrollTop = consoleDiv.scrollHeight;
+            
+            // Also log to browser console
+            if (type === 'error') {
+                console.error(message);
+            } else {
+                console.log(message);
+            }
+        }
+
+        // Update request details
+        function updateRequestDetails(method, url, payload) {
+            document.getElementById('requestDetails').textContent = 
+                `Method: ${method}\nURL: ${url}\nPayload:\n${JSON.stringify(payload, null, 2)}`;
+        }
+
+        // Update step indicator
+        function updateStepIndicator(step) {
+            // Reset all steps
+            document.querySelectorAll('.step').forEach((el, index) => {
+                el.classList.remove('active', 'completed');
+                if (index + 1 < step) {
+                    el.classList.add('completed');
+                }
+            });
+            
+            // Set active step
+            if (step >= 1 && step <= 3) {
+                document.getElementById(`step${step}`).classList.add('active');
+            }
+        }
+
+        // Show preloader with custom text
+        function showPreloader(text = 'Processing...') {
+            document.getElementById('preloader').style.display = 'block';
+            document.getElementById('statusText').textContent = text;
+            document.getElementById('progressContainer').style.display = 'block';
+        }
+
+        // Hide preloader
+        function hidePreloader() {
+            document.getElementById('preloader').style.display = 'none';
+            document.getElementById('progressContainer').style.display = 'none';
+        }
+
+        // Update progress
+        function updateProgress(percent, text) {
+            const progressBar = document.getElementById('progressBar');
+            const progressText = document.getElementById('progressText');
+            progressBar.style.width = `${percent}%`;
+            progressText.textContent = text;
+        }
+
+        // Update response status badge
+        function updateStatusBadge(status, text) {
+            const badge = document.getElementById('responseStatus');
+            badge.className = 'status-badge';
+            
+            if (status === 'success') {
+                badge.className += ' status-success';
+                badge.textContent = 'Success';
+            } else if (status === 'error') {
+                badge.className += ' status-error';
+                badge.textContent = 'Error';
+            } else if (status === 'warning') {
+                badge.className += ' status-warning';
+                badge.textContent = text || 'Warning';
+            } else {
+                badge.className += ' status-pending';
+                badge.textContent = text || 'Ready';
+            }
+        }
+
+        // Update connection status
+        function updateConnectionStatus(status, message = '') {
+            const statusBadge = document.getElementById('connectionStatus');
+            statusBadge.className = 'badge';
+            
+            if (status === 'connected') {
+                statusBadge.className += ' bg-success';
+                statusBadge.textContent = 'Connected';
+            } else if (status === 'error') {
+                statusBadge.className += ' bg-danger';
+                statusBadge.textContent = 'Error';
+            } else {
+                statusBadge.className += ' bg-secondary';
+                statusBadge.textContent = 'Not tested';
+            }
+            
+            if (message) {
+                logToConsole(message, status === 'connected' ? 'success' : 'error');
+            }
+        }
+
+        // Load sample configurations
+        function loadSample(type) {
+            const samples = {
+                billing: {
+                    caseId: "02888c89-4fc8-f011-8543-002248da5d02",
+                    task: "Resolve billing discrepancy for invoice INV-2023-0456. Customer claims they were overcharged by $150. Verify charges and provide refund if applicable."
+                },
+                technical: {
+                    caseId: "d62eee4b-4f7a-eb11-b1ab-000d3a1b1808",
+                    task: "Customer cannot access the portal after password reset. Help troubleshoot the login issue and provide step-by-step resolution."
+                },
+                account: {
+                    caseId: "02888c89-4fc8-f011-8543-002248da5d02",
+                    task: "Customer needs to update their account address and contact information. Verify identity and process the update with proper validation."
+                },
+                escalation: {
+                    caseId: "02888c89-4fc8-f011-8543-002248da5d02",
+                    task: "VIP customer reporting critical data loss. This requires immediate escalation to senior support and follow-up within 1 hour."
+                }
+            };
+
+            const sample = samples[type];
+            if (sample) {
+                document.getElementById('caseId').value = sample.caseId;
+                document.getElementById('task').value = sample.task;
+                logToConsole(`Loaded ${type} sample configuration`, 'info');
+            }
+        }
+
+        // Helper function to build URL properly
+        function buildUrl(endpoint) {
+            let baseUrl = document.getElementById('apiUrl').value;
+            // Remove trailing slash if present
+            baseUrl = baseUrl.replace(/\/$/, '');
+            // Ensure endpoint starts with /
+            if (!endpoint.startsWith('/')) {
+                endpoint = '/' + endpoint;
+            }
+            return `${baseUrl}${endpoint}`;
+        }
+
+        // Test API connection
+        async function testApi() {
+            const baseUrl = document.getElementById('apiUrl').value;
+            const testUrl = `${baseUrl.replace(/\/$/, '')}/test`;
+            
+            logToConsole(`Testing API connection to: ${testUrl}`, 'info');
+            updateConnectionStatus('testing');
+            
+            try {
+                const response = await fetch(testUrl, {
+                    method: 'GET',
+                    headers: {
+                        'Accept': 'application/json'
+                    }
+                });
+                
+                if (!response.ok) {
+                    const errorText = await response.text();
+                    throw new Error(`HTTP ${response.status}: ${errorText}`);
+                }
+                
+                const data = await response.json();
+                updateConnectionStatus('connected', `API is running: ${data.message}`);
+                return true;
+            } catch (error) {
+                updateConnectionStatus('error', `API test failed: ${error.message}`);
+                return false;
+            }
+        }
+
+        // Test case fetch function
+        async function testFetch() {
+            const caseId = document.getElementById('caseId').value;
+            const testUrl = buildUrl(`/test_fetch/${caseId}`);
+            
+            updateStepIndicator(2);
+            showPreloader('Testing case fetch...');
+            updateProgress(30, 'Fetching case data...');
+            updateStatusBadge('pending', 'Fetching...');
+            
+            updateRequestDetails('GET', testUrl, {});
+            logToConsole(`Testing fetch for case: ${caseId}`, 'info');
+            logToConsole(`URL: ${testUrl}`, 'info');
+            
+            try {
+                const response = await fetch(testUrl, {
+                    method: 'GET',
+                    headers: {
+                        'Accept': 'application/json'
+                    }
+                });
+                
+                updateProgress(100, 'Fetch complete!');
+                
+                if (!response.ok) {
+                    const errorText = await response.text();
+                    throw new Error(`HTTP ${response.status}: ${errorText}`);
+                }
+                
+                const data = await response.json();
+                
+                if (data.success) {
+                    updateStatusBadge('success');
+                    document.getElementById('responseJson').textContent = JSON.stringify(data, null, 2);
+                    logToConsole(`Successfully fetched case ${caseId}`, 'success');
+                    
+                    // Show a summary
+                    alert(`Successfully fetched case data!\n\nCase Title: ${data.case_data?.title || 'N/A'}\nStatus: ${data.case_data?.statuscode || 'N/A'}`);
+                } else {
+                    updateStatusBadge('error');
+                    document.getElementById('responseJson').textContent = JSON.stringify(data, null, 2);
+                    logToConsole(`Failed to fetch case: ${data.error}`, 'error');
+                    alert(`Failed to fetch case: ${data.error}`);
+                }
+            } catch (error) {
+                updateStatusBadge('error');
+                const errorMsg = `Fetch test error: ${error.message}`;
+                logToConsole(errorMsg, 'error');
+                document.getElementById('responseJson').textContent = JSON.stringify({error: error.message}, null, 2);
+                alert(`Error: ${error.message}`);
+            } finally {
+                hidePreloader();
+            }
+        }
+
+        // Health check function
+        async function healthCheck() {
+            const healthUrl = buildUrl('/health');
+            
+            updateRequestDetails('GET', healthUrl, {});
+            logToConsole('Performing health check...');
+            logToConsole(`URL: ${healthUrl}`, 'info');
+            
+            try {
+                const response = await fetch(healthUrl);
+                
+                if (!response.ok) {
+                    throw new Error(`HTTP ${response.status}: ${await response.text()}`);
+                }
+                
+                const data = await response.json();
+                
+                logToConsole(`Health check response: ${JSON.stringify(data)}`, 'info');
+                
+                // Show detailed health status
+                let statusMessage = `Health Status: ${data.status}\n`;
+                statusMessage += `Dynamics URL: ${data.components?.dynamics?.url || 'N/A'}\n`;
+                statusMessage += `Dynamics Token: ${data.components?.dynamics?.token_valid ? 'Valid' : 'Invalid'}\n`;
+                statusMessage += `LLM: ${data.components?.llm?.available ? 'Available' : 'Unavailable'}`;
+                
+                alert(statusMessage);
+                
+                // Update status badge based on health
+                if (data.status === 'healthy') {
+                    updateStatusBadge('success');
+                } else {
+                    updateStatusBadge('warning');
+                }
+                
+            } catch (error) {
+                logToConsole(`Health check error: ${error.message}`, 'error');
+                alert(`Health check failed: ${error.message}`);
+                updateStatusBadge('error');
+            }
+        }
+
+        // Main function to resolve case
+        async function resolveCase() {
+            const caseId = document.getElementById('caseId').value;
+            const task = document.getElementById('task').value;
+            
+            const resolveUrl = buildUrl('/resolve_case');
+            const payload = {
+                case_id: caseId,
+                task: task
+            };
+            
+            // Reset UI
+            updateStepIndicator(1);
+            showPreloader('Starting case resolution...');
+            updateStatusBadge('pending', 'Processing...');
+            
+            // Clear previous results
+            document.getElementById('responseSummary').style.display = 'none';
+            document.getElementById('messagesList').innerHTML = '<p class="text-muted">No messages yet</p>';
+            document.getElementById('resolutionContent').innerHTML = '<p class="text-muted">No resolution data yet</p>';
+            
+            updateRequestDetails('POST', resolveUrl, payload);
+            logToConsole(`Starting resolution for case: ${caseId}`, 'info');
+            logToConsole(`Task: ${task}`, 'info');
+            logToConsole(`URL: ${resolveUrl}`, 'info');
+            
+            try {
+                // Step 1: Fetch
+                updateProgress(25, 'Fetching case data...');
+                logToConsole('Fetching case data from Dynamics...', 'info');
+                
+                // Step 2: Analyze
+                updateStepIndicator(2);
+                updateProgress(50, 'Analyzing case with AI...');
+                logToConsole('Analyzing case with AI model...', 'info');
+                
+                // Make the API call
+                const response = await fetch(resolveUrl, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Accept': 'application/json'
+                    },
+                    body: JSON.stringify(payload)
+                });
+                
+                updateProgress(75, 'Processing response...');
+                
+                if (!response.ok) {
+                    const errorText = await response.text();
+                    throw new Error(`HTTP error! status: ${response.status}, message: ${errorText}`);
+                }
+                
+                const data = await response.json();
+                
+                updateStepIndicator(3);
+                updateProgress(100, 'Complete!');
+                updateStatusBadge(data.success ? 'success' : 'error');
+                
+                // Display results
+                document.getElementById('responseJson').textContent = JSON.stringify(data, null, 2);
+                
+                // Update summary
+                if (data.success) {
+                    document.getElementById('responseSummary').style.display = 'block';
+                    document.getElementById('resultCaseId').textContent = data.case_id;
+                    document.getElementById('resultStatus').textContent = data.escalated ? 'Escalated' : 'Resolved';
+                    document.getElementById('resultConfidence').textContent = data.resolution?.confidence || 'N/A';
+                    document.getElementById('resultEscalated').textContent = data.escalated ? 'Yes' : 'No';
+                    
+                    // Display messages
+                    if (data.messages && data.messages.length > 0) {
+                        const messagesHtml = data.messages.map((msg, index) => {
+                            let bubbleClass = 'message-bubble';
+                            if (msg.includes('fetch') || msg.includes('I\'ll fetch') || msg.includes('Error fetching')) {
+                                bubbleClass += ' ai-message';
+                            } else if (msg.includes('tool call') || msg.includes('ToolMessage')) {
+                                bubbleClass += ' tool-message';
+                            } else if (msg.includes('Human')) {
+                                bubbleClass += ' human-message';
+                            }
+                            
+                            return `<div class="${bubbleClass}">
+                                <strong>Step ${index + 1}:</strong> ${msg}
+                            </div>`;
+                        }).join('');
+                        document.getElementById('messagesList').innerHTML = messagesHtml;
+                    }
+                    
+                    // Display resolution
+                    if (data.resolution) {
+                        const resolutionHtml = `
+                            <div class="mb-3">
+                                <h6>Resolution Steps:</h6>
+                                <ul class="list-group">
+                                    ${data.resolution.steps.map(step => `<li class="list-group-item">${step}</li>`).join('')}
+                                </ul>
+                            </div>
+                            <div class="mb-3">
+                                <h6>Email Draft:</h6>
+                                <div class="p-3 bg-light rounded">
+                                    ${data.resolution.email_draft.replace(/\n/g, '<br>')}
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="alert alert-info">
+                                        <strong>Confidence:</strong> ${data.resolution.confidence}%
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="alert ${data.escalated ? 'alert-warning' : 'alert-success'}">
+                                        <strong>Action:</strong> ${data.escalated ? 'Case Escalated' : 'Case Resolved'}
+                                    </div>
+                                </div>
+                            </div>
+                        `;
+                        document.getElementById('resolutionContent').innerHTML = resolutionHtml;
+                    }
+                    
+                    // Show tool result
+                    if (data.tool_result) {
+                        const toolResult = document.createElement('div');
+                        toolResult.className = 'alert alert-secondary mt-3';
+                        toolResult.innerHTML = `<strong>Tool Result:</strong> ${data.tool_result}`;
+                        document.getElementById('resolutionContent').appendChild(toolResult);
+                    }
+                    
+                    logToConsole(`Successfully resolved case ${caseId}`, 'success');
+                    logToConsole(`Confidence: ${data.resolution?.confidence || 'N/A'}%, Escalated: ${data.escalated}`, 'info');
+                } else {
+                    logToConsole(`Failed to resolve case: ${data.error}`, 'error');
+                    alert(`Failed to resolve case: ${data.error}`);
+                }
+                
+            } catch (error) {
+                updateStepIndicator(3);
+                updateStatusBadge('error');
+                logToConsole(`Error: ${error.message}`, 'error');
+                document.getElementById('responseJson').textContent = JSON.stringify({error: error.message}, null, 2);
+                alert(`Error: ${error.message}`);
+            } finally {
+                hidePreloader();
+            }
+        }
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', function() {
+            logToConsole('Test interface initialized', 'info');
+            updateStepIndicator(1);
+            updateStatusBadge('pending', 'Ready');
+            
+            // Test API connectivity on load
+            setTimeout(() => {
+                logToConsole('Testing API connectivity...', 'info');
+                testApi();
+            }, 1000);
+        });
+    </script>
+</body>
+</html>
