@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Expert CRM Dashboard</title>
+    <title>POC - Customer Support - Agentic</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css"
           integrity="sha512-Kc323vGBEqzTmouAECnVceyQqyqdsSiqLQISBL29aUW4U/M7pSPA/gEUZQqv1cwx4OnYxTxve5UMg5GT6L4JJg=="
           crossorigin="anonymous" referrerpolicy="no-referrer" />
@@ -178,11 +178,7 @@
                 <button class="tab-header" onclick="switchTab(2)">Use Case – Customer Service</button>
                 <button class="tab-header" onclick="switchTab(3)">White Paper</button>
                 <button class="tab-header" onclick="switchTab(4)">Workflows</button>
-                <button class="tab-header" onclick="switchTab(5)">Demo</button>
-                <button class="tab-header" onclick="switchTab(6)">...</button>
-                <button class="tab-header" onclick="switchTab(7)">..</button>
-                <button class="tab-header" onclick="switchTab(8)">....</button>
-                <button class="tab-header" onclick="switchTab(9)">....</button>
+                <button class="tab-header" onclick="switchTab(5)">Demo</button>                
             </div>
             <div id="tab1" class="tab-content active">
                 <div class="explanation">
@@ -224,41 +220,29 @@
                 <div class="explanation">
                     <h3>Workflows</h3>
                     <!-- ADAPTED: Added placeholder for future video; replace src with actual Drive link -->
-                    <div class="video-placeholder">Video content for Workflows will be embedded here.</div>
-                    <!-- Example : <iframe src="https://drive.google.com/file/d/YOUR_FILE_ID/preview" style="border:0;" allowfullscreen loading="lazy"></iframe> -->
+                    
+                    <!-- Example: <iframe src="https://drive.google.com/file/d/1rG-NWtE-juPyR1ClSMyJPXX6oUPKEemi/preview" style="border:0;" allowfullscreen loading="lazy"></iframe> -->
+					<iframe 
+                        src="https://drive.google.com/file/d/1rG-NWtE-juPyR1ClSMyJPXX6oUPKEemi/preview" 
+                        style="border:0;" 
+                        allowfullscreen
+                        loading="lazy">
+                    </iframe>
                 </div>
             </div>
             <div id="tab5" class="tab-content">
                 <div class="explanation">
                     <h3>Demo</h3>
                     <!-- ADAPTED: Added placeholder; ensure sharing permissions for any added video -->
-                    <div class="video-placeholder">Demo video will be embedded here.</div>
+                    <iframe
+                        src="https://drive.google.com/file/d/1LRAE7CQ613FstbyiobuRf6V72gZCpNtY/preview"
+                        style="border:0;"
+                        allowfullscreen
+                        loading="lazy"> <!-- ADAPTED: Added lazy loading for performance; removed fixed width/height to use CSS -->
+                    </iframe>
                 </div>
             </div>
-            <div id="tab6" class="tab-content">
-                <div class="explanation">
-                    <h3>...</h3>
-                    <div class="video-placeholder">Content for this tab will be added.</div>
-                </div>
-            </div>
-            <div id="tab7" class="tab-content">
-                <div class="explanation">
-                    <h3>..</h3>
-                    <div class="video-placeholder">Content for this tab will be added.</div>
-                </div>
-            </div>
-            <div id="tab8" class="tab-content">
-                <div class="explanation">
-                    <h3>....</h3>
-                    <div class="video-placeholder">Content for this tab will be added.</div>
-                </div>
-            </div>
-            <div id="tab9" class="tab-content">
-                <div class="explanation">
-                    <h3>....</h3>
-                    <div class="video-placeholder">Content for this tab will be added.</div>
-                </div>
-            </div>
+            
         </div>
     </div>
     <script>
