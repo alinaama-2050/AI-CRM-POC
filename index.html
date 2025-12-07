@@ -7,7 +7,7 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css"
           integrity="sha512-Kc323vGBEqzTmouAECnVceyQqyqdsSiqLQISBL29aUW4U/M7pSPA/gEUZQqv1cwx4OnYxTxve5UMg5GT6L4JJg=="
           crossorigin="anonymous" referrerpolicy="no-referrer" />
-          
+         
     <style>
         /* ------------------------------------------------------------------
          * 1. BASE STYLES AND LAYOUT
@@ -20,7 +20,6 @@
             margin: 0;
             padding: 0;
         }
-
         .container {
             max-width: 1400px; /* MODIFIED: Increased max-width */
             margin: 30px auto;
@@ -29,13 +28,12 @@
             border-radius: 8px;
             box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
         }
-
         .intro {
             font-size: 15px;
             margin-bottom: 22px;
             text-align: justify;
         }
-        
+       
         /* ------------------------------------------------------------------
          * 2. HEADER AND CALL-TO-ACTION (CTA)
          * ------------------------------------------------------------------ */
@@ -46,18 +44,16 @@
             text-align: center;
             margin-bottom: 20px;
         }
-
         .header p {
             font-size: 20px;
             font-weight: 700;
             margin: 0;
         }
-
         .cta {
             text-align: center;
             margin: 30px 0;
         }
-        
+       
         .btn {
             display: inline-flex;
             align-items: center;
@@ -71,11 +67,9 @@
             border-radius: 6px;
             transition: background 0.3s;
         }
-
         .btn:hover {
             background: #008cc2;
         }
-
         /* ------------------------------------------------------------------
          * 3. TABS (Cleaned up and consolidated)
          * ------------------------------------------------------------------ */
@@ -85,7 +79,6 @@
             border-bottom: 2px solid #ccc;
             margin-bottom: 0;
         }
-
         .tab-header {
             border: none;
             background-color: transparent;
@@ -99,7 +92,6 @@
             position: relative;
             bottom: -2px;
         }
-
         .tab-header:hover {
             transform: scale(1.05);
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
@@ -107,7 +99,6 @@
             color: #007bff;
             z-index: 10;
         }
-
         .tab-header.active {
             border: 2px solid #ccc;
             border-bottom: 2px solid #fff;
@@ -117,7 +108,6 @@
             transform: scale(1.0);
             box-shadow: none;
         }
-
         /* Tab Content Styles */
         .tab-content {
             display: none;
@@ -127,37 +117,62 @@
             border-radius: 0 0 8px 8px;
             background-color: #fff;
         }
-
         .tab-content.active {
             display: block;
         }
-
         /* ------------------------------------------------------------------
-         * 4. FRAME ENHANCEMENT (Enlarged and Framed)
+         * 4. FRAME ENHANCEMENT (Enlarged and Framed, Video-Optimized)
          * ------------------------------------------------------------------ */
         .explanation iframe {
             display: block;
             width: 100%;
-            height: 90vh; /* MODIFIED: Increased height using viewport units */
+            height: 70vh; /* ADAPTED: Reduced from 90vh for better mobile fit and video controls visibility; adjust as needed */
+            min-height: 400px; /* Ensures minimum playable size on small screens */
             border: 5px solid #f4f4f4 !important;
             box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-            border-radius: 4px;
+            border-radius: 8px;
+            margin: 10px 0; /* Adds breathing room around the video */
         }
-
+        .explanation iframe:hover {
+            box-shadow: 0 6px 15px rgba(0, 0, 0, 0.15); /* Subtle hover effect for interactivity */
+        }
+        /* Responsive adjustments for videos */
+        @media (max-width: 768px) {
+            .explanation iframe {
+                height: 50vh; /* Scales down on mobile for better usability */
+                border-width: 3px; /* Thinner border on small screens */
+            }
+            .tab-headers {
+                justify-content: center; /* Centers tabs on mobile */
+            }
+            .tab-header {
+                flex: 1; /* Equal width tabs on mobile */
+                margin: 2px;
+                font-size: 0.9em;
+            }
+        }
+        /* Video loading placeholder (optional enhancement) */
+        .video-placeholder {
+            display: none; /* Hidden by default; show via JS if needed */
+            text-align: center;
+            padding: 40px;
+            color: #666;
+            font-style: italic;
+        }
+        .tab-content.active .video-placeholder {
+            display: block; /* Could be toggled for lazy loading */
+        }
     </style>
 </head>
 <body>
-
     <div class="container">
         <div class="header">
-            <p>Resolution Coach Agent</p>
+            <p>Resolution Coach Agent</p>
         </div>
-
         <div class="content">
             <p class="intro">
                 <strong>Use Case of Agentic applyed on CRM Customer Support:</strong>
             </p>
-
             <div class="tab-headers">
                 <button class="tab-header active" onclick="switchTab(1)">Overview</button>
                 <button class="tab-header" onclick="switchTab(2)">Use Case – Customer Service</button>
@@ -165,96 +180,106 @@
                 <button class="tab-header" onclick="switchTab(4)">Workflows</button>
                 <button class="tab-header" onclick="switchTab(5)">Demo</button>
                 <button class="tab-header" onclick="switchTab(6)">...</button>
-                <button class="tab-header" onclick="switchTab(7)">..</button>                
+                <button class="tab-header" onclick="switchTab(7)">..</button>
                 <button class="tab-header" onclick="switchTab(8)">....</button>
                 <button class="tab-header" onclick="switchTab(9)">....</button>
             </div>
-
             <div id="tab1" class="tab-content active">
                 <div class="explanation">
                     <h3>Overview</h3>
-                    <iframe src="https://drive.google.com/file/d/1LRAE7CQ613FstbyiobuRf6V72gZCpNtY/view?usp=drive_link/preview" style="border:0;"></iframe>
+                    <!-- FIXED: Removed nested duplicate tab structure; iframe now directly under explanation -->
+                    <iframe
+                        src="https://drive.google.com/file/d/1LRAE7CQ613FstbyiobuRf6V72gZCpNtY/preview"
+                        style="border:0;"
+                        allowfullscreen
+                        loading="lazy"> <!-- ADAPTED: Added lazy loading for performance; removed fixed width/height to use CSS -->
+                    </iframe>
                 </div>
             </div>
-
             <div id="tab2" class="tab-content">
                 <div class="explanation">
                     <h3>Use Case</h3>
-                    <iframe src="https://drive.google.com/file/d/1LRAE7CQ613FstbyiobuRf6V72gZCpNtY/view?usp=drive_link/preview" style="border:0;"></iframe>
+                    <!-- FIXED: Corrected src URL to proper /preview format -->
+                    <iframe 
+                        src="https://drive.google.com/file/d/1LRAE7CQ613FstbyiobuRf6V72gZCpNtY/preview" 
+                        style="border:0;" 
+                        allowfullscreen
+                        loading="lazy">
+                    </iframe>
                 </div>
             </div>
-
             <div id="tab3" class="tab-content">
                 <div class="explanation">
                     <h3>Architecture</h3>
-                    <iframe src="https://drive.google.com/file/d/1uBF5hmFD-Mw2GD-3N2Rcd8BI2OEgPnjj/preview" style="border:0;"></iframe>
+                    <!-- Already correct; added allowfullscreen and lazy loading for consistency -->
+                    <iframe 
+                        src="https://drive.google.com/file/d/1uBF5hmFD-Mw2GD-3N2Rcd8BI2OEgPnjj/preview" 
+                        style="border:0;" 
+                        allowfullscreen
+                        loading="lazy">
+                    </iframe>
                 </div>
             </div>
-
             <div id="tab4" class="tab-content">
                 <div class="explanation">
-                    <h3>Workflows</h3>                                      
+                    <h3>Workflows</h3>
+                    <!-- ADAPTED: Added placeholder for future video; replace src with actual Drive link -->
+                    <div class="video-placeholder">Video content for Workflows will be embedded here.</div>
+                    <!-- Example: <iframe src="https://drive.google.com/file/d/YOUR_FILE_ID/preview" style="border:0;" allowfullscreen loading="lazy"></iframe> -->
                 </div>
             </div>
-
             <div id="tab5" class="tab-content">
                 <div class="explanation">
-                    <h3>....</h3>
-                    
+                    <h3>Demo</h3>
+                    <!-- ADAPTED: Added placeholder; ensure sharing permissions for any added video -->
+                    <div class="video-placeholder">Demo video will be embedded here.</div>
                 </div>
             </div>
-
             <div id="tab6" class="tab-content">
                 <div class="explanation">
-                    <div class="explanation">
-                    <h3>....</h3>
-                    
+                    <h3>...</h3>
+                    <div class="video-placeholder">Content for this tab will be added.</div>
                 </div>
             </div>
-
             <div id="tab7" class="tab-content">
                 <div class="explanation">
-                    <div class="explanation">
-                    <h3>....</h3>
-                    
+                    <h3>..</h3>
+                    <div class="video-placeholder">Content for this tab will be added.</div>
                 </div>
             </div>
-
             <div id="tab8" class="tab-content">
                 <div class="explanation">
-                    <div class="explanation">
                     <h3>....</h3>
-                    
+                    <div class="video-placeholder">Content for this tab will be added.</div>
                 </div>
             </div>
-
             <div id="tab9" class="tab-content">
                 <div class="explanation">
-                    <div class="explanation">
                     <h3>....</h3>
-                    
+                    <div class="video-placeholder">Content for this tab will be added.</div>
                 </div>
-            </div>            
-        
+            </div>
+        </div>
     </div>
-
     <script>
         function switchTab(tabNumber) {
             // Get all tab content elements
             var contents = document.querySelectorAll('.tab-content');
             var headers = document.querySelectorAll('.tab-header');
-            
+           
             // Loop through and hide/deactivate all
             for (var i = 0; i < contents.length; i++) {
                 contents[i].classList.remove('active');
                 headers[i].classList.remove('active');
             }
-
             // Show the requested tab content and set the button as active
             document.getElementById('tab' + tabNumber).classList.add('active');
             headers[tabNumber - 1].classList.add('active');
+            
+            // ADAPTED: Optional - Reload iframe on tab switch to restart video if desired
+            // var iframe = document.querySelector('#tab' + tabNumber + ' iframe');
+            // if (iframe) { iframe.src = iframe.src; }
         }
     </script>
-
 </body>
 </html>
